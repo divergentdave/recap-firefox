@@ -181,6 +181,8 @@ ContentListener.prototype = {
                 }
             }
 
+            // TODO: Need to be able to parse casenum from POST data of the docket
+            // report page, as opposed to here, from the pre-docket report page.
             var preDocketPage = this.isPreDocketReportPage(URIpath)
             if (preDocketPage){
                 //Get the casenum from the current page URI
@@ -192,7 +194,8 @@ ContentListener.prototype = {
                 }
             }
 
-
+            // TODO: Need an alternative code path to caseCheckAndModify, since we
+            // won't have a pre-docket page.
             if (!preDocketPage && court && document) {
                 this.docCheckAndModify(document, court);
             }
@@ -245,6 +248,7 @@ ContentListener.prototype = {
         if (casenum === undefined){
             return
         }
+        // TODO: Investigate thist more, no pre-docket page now.
         //Casenum is defined, so this is a pre-docket show page
         //We will ask recap for a link to the docket page, if it exists
         var jsonout = { court: court,
@@ -519,6 +523,8 @@ ContentListener.prototype = {
         }
     },
 
+    // TODO: This is the callback from an XHR to RECAP, made when visiting a
+    // pre-docket page. Should we replicate this behavior on the page before?
     handleCaseResponse: function(req, document) {
 
         var jsonin = JSON.parse(req.responseText);
@@ -580,6 +586,7 @@ ContentListener.prototype = {
 
     },
 
+    // Note: This is called from onStateChange, used to detect pre-docket pages
     isPreDocketReportPage: function(current_path){
         var current_page_name = null;
         try {

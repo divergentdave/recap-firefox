@@ -134,6 +134,9 @@ RequestObserver.prototype = {
             log("Exception " + e.message);
         }
 
+        // Note: pretty filenames depend on parsing case numbers from the referrer
+        // when on the docket page. The metadata object is the populated based on this
+        // to map docid to case numbers, document numbers, etc.
         if ((typeof casenum != 'undefined') &&
             (typeof officialcasenum != 'undefined')) {
 
@@ -194,6 +197,8 @@ RequestObserver.prototype = {
 
     },
 
+    // TODO: This appears to be dead code, not called anywhere,
+    // but it's on the right track for hooking POST data.
     getPageInfo: function(subject, channel) {
         var poststr = "";
         var getstr = channel.URI.spec;
@@ -209,6 +214,7 @@ RequestObserver.prototype = {
                             .createInstance(Components.interfaces.nsIBinaryInputStream);
             stream.setInputStream(ULchannel);
             var postBytes = stream.readByteArray(stream.available());
+            // TODO: there's probably a better way to decode bytes->str
             poststr = String.fromCharCode.apply(null, postBytes);
         }
 
@@ -221,6 +227,8 @@ RequestObserver.prototype = {
     },
 
     // This is HTML for CA
+    // TODO: This catches POST too, looks at it for a few options
+    // This may be suitable for more of the non-CA sites now...
     tryHTMLmetaCA: function(subject, channel, mimetype, court) {
 
         var poststr = "";
@@ -371,6 +379,7 @@ RequestObserver.prototype = {
         var pageName = this.perlPathMatch(path);
         var refPageName = this.perlPathMatch(refpath);
 
+        // TODO: Need to update these heuristics, actually look at POST vars now
         // HTML page is only interesting if
         //    (1) it is on our list, and
         //    (2) the page name is the same as the referrer's page name.
@@ -481,6 +490,8 @@ RequestObserver.prototype = {
 
         var pageName = this.perlPathMatch(path);
 
+        // TODO: Need to update this heuristic, check POST args to determine if we
+        // have a form only or results.
         // don't cache pages which are sometimes forms, if they are forms
         if (sometimesFormPages.indexOf(pageName) >= 0 && this.perlArgsJustDigits(path)) {
             return true;
@@ -499,6 +510,7 @@ RequestObserver.prototype = {
         return pageName;
     },
 
+    // TODO: See above
     // are the arguments digits only?  If so, this is a form.
     perlArgsJustDigits: function(path) {
         var args = null;
